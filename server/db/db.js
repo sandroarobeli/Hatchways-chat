@@ -10,16 +10,4 @@ const db = new Sequelize(
 	}
 );
 
-db.authenticate()
-	.then((result) => {
-		console.log(
-			`Connection to ${process.env.DB_NAME.toUpperCase()} for ${
-				process.env.DB_USER
-			} has been established`
-		);
-	})
-	.catch((error) => {
-		console.log("Unable to connect to the database:", error);
-	});
-
 module.exports = db;

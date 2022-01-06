@@ -40,7 +40,7 @@ const Home = (props) => {
 	};
 
 	return (
-		<React.Fragment>
+		<>
 			{/* logout button will eventually be in a dropdown next to username */}
 			<Button className={classes.logout} onClick={handleLogout}>
 				Logout
@@ -50,7 +50,7 @@ const Home = (props) => {
 				<SidebarContainer />
 				<ActiveChat />
 			</Grid>
-		</React.Fragment>
+		</>
 	);
 };
 
