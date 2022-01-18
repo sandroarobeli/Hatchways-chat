@@ -1,15 +1,11 @@
 import React from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import {
-  Grid,
-  Box,
-  Typography,
-  Button,
-  FormControl,
-  TextField,
-} from "@material-ui/core";
+import { Grid, CssBaseline } from "@material-ui/core";
 import { login } from "./store/utils/thunkCreators";
+import SideBanner from "./components/Authentication/SideBanner";
+import FormSelector from "./components/Authentication/FormSelector";
+import AuthForm from "./components/Authentication/AuthForm";
 
 const Login = (props) => {
   const history = useHistory();
@@ -28,40 +24,31 @@ const Login = (props) => {
   }
 
   return (
-    <Grid container justify="center">
-      <Box>
-        <Grid container item>
-          <Typography>Need to register?</Typography>
-          <Button onClick={() => history.push("/register")}>Register</Button>
-        </Grid>
-        <form onSubmit={handleLogin}>
-          <Grid>
-            <Grid>
-              <FormControl margin="normal" required>
-                <TextField
-                  aria-label="username"
-                  label="Username"
-                  name="username"
-                  type="text"
-                />
-              </FormControl>
-            </Grid>
-            <FormControl margin="normal" required>
-              <TextField
-                label="password"
-                aria-label="password"
-                type="password"
-                name="password"
-              />
-            </FormControl>
-            <Grid>
-              <Button type="submit" variant="contained" size="large">
-                Login
-              </Button>
-            </Grid>
+    <Grid container justify="center" spacing={{ xs: 1, sm: 2 }}>
+      <CssBaseline />
+      <Grid item xs={12} sm={4}>
+        <SideBanner />
+      </Grid>
+      <Grid item xs={12} sm={8}>
+        <Grid container spacing={1} direction="column">
+          <Grid item xs={12}>
+            <FormSelector
+              textContent={"Don't have an account?"}
+              buttonContent={"Create account"}
+              onClick={() => history.push("/register")}
+            />
           </Grid>
-        </form>
-      </Box>
+          <Grid item xs={12}>
+            <form onSubmit={handleLogin}>
+              <AuthForm
+                textContent={"Welcome back!"}
+                buttonContent={"Login"}
+                isRegisterForm={false}
+              />
+            </form>
+          </Grid>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
