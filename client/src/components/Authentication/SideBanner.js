@@ -12,11 +12,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url(${Image})`,
     borderRadius: 0,
     [theme.breakpoints.up("sm")]: {
-      width: "100%",
+      marginLeft: 0,
       minWidth: "18rem",
+      width: "41.5vw",
       height: "100vh",
-      backgroundImage: `url(${Image})`,
-      borderRadius: 0,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
     },
@@ -30,13 +29,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     [theme.breakpoints.up("sm")]: {
-      background: "linear-gradient(180deg, #3A8DFF 0%, #86B9FF 100%)",
-      width: "100%",
       height: "100vh",
-      opacity: 0.85,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
     },
   },
   bannerLogo: {
@@ -45,18 +38,14 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     top: "calc(50vh * 0.285)",
     [theme.breakpoints.up("sm")]: {
-      position: "relative",
       top: "calc(100vh * 0.285)",
-      width: "4.1875rem",
-      height: "4.125rem",
     },
   },
   bannerTextBox: {
     position: "relative",
-    top: "calc(50vh * 0.436)",
+    top: "calc(50vh * 0.285 + 39.5px)",
     [theme.breakpoints.up("sm")]: {
-      position: "relative",
-      top: "calc(100vh * 0.436)",
+      top: "calc(100vh * 0.285 + 39.5px)",
     },
   },
   bannerText: {
