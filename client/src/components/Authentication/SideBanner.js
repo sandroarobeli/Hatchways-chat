@@ -8,7 +8,7 @@ import BubbleLogo from "../../assets/bubble.svg";
 const useStyles = makeStyles((theme) => ({
   banner: {
     width: "100%",
-    height: "50vh",
+    height: 0, //"50vh",
     backgroundImage: `url(${Image})`,
     borderRadius: 0,
     [theme.breakpoints.up("sm")]: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   bannerContent: {
     background: "linear-gradient(180deg, #3A8DFF 0%, #86B9FF 100%)",
     width: "100%",
-    height: "50vh",
+    height: 0, //"50vh",
     opacity: 0.85,
     display: "flex",
     flexDirection: "column",
