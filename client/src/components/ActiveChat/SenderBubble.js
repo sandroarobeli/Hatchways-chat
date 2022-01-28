@@ -61,9 +61,9 @@ const useStyles = makeStyles(() => ({
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text, attachments, senderUrl, senderName } = props;
-
+  const { time, text, attachments } = props;
   let content;
+
   if (attachments === null) {
     content = (
       <Box className={classes.root}>
@@ -99,9 +99,6 @@ const SenderBubble = (props) => {
           </Box>
         )}
         {attachments.length > 1 && <Typography className={classes.date}>{time}</Typography>}
-        {attachments.length > 0 && (
-          <Avatar alt={senderName} src={senderUrl} className={classes.senderAvatar} />
-        )}
       </Box>
     );
   }

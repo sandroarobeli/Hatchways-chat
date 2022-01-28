@@ -4,49 +4,114 @@ import { Box, Typography, Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
   root: {
-    display: "flex"
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginTop: 20,
+    marginBottom: 5,
   },
   avatar: {
     height: 30,
     width: 30,
     marginRight: 11,
-    marginTop: 6
+    marginTop: 6,
   },
   usernameDate: {
     fontSize: 11,
     color: "#BECCE2",
     fontWeight: "bold",
-    marginBottom: 5
+    marginBottom: 5,
   },
   bubble: {
     backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
-    borderRadius: "0 10px 10px 10px"
+    borderRadius: "0 10px 10px 10px",
+    marginBottom: 5,
   },
   text: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#FFFFFF",
     letterSpacing: -0.2,
-    padding: 8
-  }
+    padding: 8,
+  },
+  visual: {
+    display: "flex",
+    marginBottom: 5,
+  },
+  single: {
+    objectFit: "cover",
+    width: "9.375rem",
+    marginRight: "5px",
+    height: "auto",
+    background: "#F4F6FA",
+    borderRadius: "10px 0px 10px 10px",
+    transform: "matrix(-1, 0, 0, 1, 0, 0)",
+  },
+  multiple: {
+    objectFit: "cover",
+    width: "calc(150px * 0.75)",
+    marginRight: "5px",
+    height: "auto",
+    background: "#F4F6FA",
+    borderRadius: "10px 0px 10px 10px",
+    transform: "matrix(-1, 0, 0, 1, 0, 0)",
+  },
+  senderAvatar: {
+    width: 20,
+    height: 20,
+    marginTop: 5,
+  },
 }));
 
 const OtherUserBubble = (props) => {
   const classes = useStyles();
-  const { text, time, otherUser } = props;
-  return (
-    <Box className={classes.root}>
-      <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-      <Box>
-        <Typography className={classes.usernameDate}>
-          {otherUser.username} {time}
-        </Typography>
-        <Box className={classes.bubble}>
-          <Typography className={classes.text}>{text}</Typography>
+  const { text, time, otherUser, attachments } = props;
+  let content;
+
+  if (attachments === null) {
+    content = (
+      <Box className={classes.root}>
+        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar} />
+        <Box>
+          <Typography className={classes.usernameDate}>
+            {otherUser.username} {time}
+          </Typography>
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
         </Box>
       </Box>
-    </Box>
-  );
+    );
+  } else {
+    content = (
+      <Box className={classes.root}>
+        {attachments.length < 2 && <Typography className={classes.usernameDate}>{time}</Typography>}
+        {text && attachments.length > 1 && (
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
+        )}
+        <Box className={classes.visual}>
+          {attachments.map((url) => (
+            <Avatar
+              key={url}
+              variant="square"
+              alt={url}
+              src={url}
+              className={attachments.length > 1 ? classes.multiple : classes.single}
+            />
+          ))}
+        </Box>
+        {text && attachments.length < 2 && (
+          <Box className={classes.bubble}>
+            <Typography className={classes.text}>{text}</Typography>
+          </Box>
+        )}
+        {attachments.length > 1 && <Typography className={classes.usernameDate}>{time}</Typography>}
+      </Box>
+    );
+  }
+  return content;
 };
 
 export default OtherUserBubble;

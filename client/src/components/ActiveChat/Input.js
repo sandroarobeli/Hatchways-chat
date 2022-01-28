@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
 import PhotoInput from "./PhotoInput";
+import SnackbarSuccess from "../SnackbarSuccess";
+import SnackbarError from "../SnackbarError";
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,6 +26,9 @@ const Input = (props) => {
   const [text, setText] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [successBarOpen, setSuccessBarOpen] = useState(false);
+  const [errorBarOpen, setErrorBarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { postMessage, otherUser, conversationId, user } = props;
 
   const handleChange = (event) => {
@@ -32,7 +38,7 @@ const Input = (props) => {
   const handlePictureUpload = (event) => {
     const files = Array.from(event.target.files);
     const formData = new FormData();
-    const fetchArray = [];
+    const promises = [];
 
     const typeIsAllowed = files.every(
       (file) =>
@@ -48,21 +54,36 @@ const Input = (props) => {
         formData.append("file", file);
         formData.append("upload_preset", "docs_upload_example_us_preset");
       }
-      fetchArray[index] = fetch("https://api.cloudinary.com/v1_1/demo/image/upload", {
-        method: "POST",
-        body: formData,
-      }).then((response) => response.json());
+      const axiosInstance = axios.create({
+        transformRequest: (data, headers) => {
+          delete headers.common["x-access-token"];
+          return data;
+        },
+        data: formData,
+      });
+      promises[index] = axiosInstance.post(
+        "https://api.cloudinary.com/v1_1/demo/image/upload",
+        formData,
+        axiosInstance
+      );
     });
 
-    const allImages = Promise.all(fetchArray);
+    const allImages = Promise.all(promises);
     allImages
       .then((images) => {
-        let imageUrls = images.map((image) => image.secure_url);
+        const imageUrls = images.map((image) => image.data.secure_url);
+        if (imageUrls.length === 0) {
+          setErrorMessage("Attachment failed. Please try again.");
+          setErrorBarOpen(true);
+        }
+
         setAttachments(imageUrls);
         setIsLoading(false);
+        setSuccessBarOpen(true);
       })
       .catch((error) => {
-        throw new Error(error.message);
+        setErrorMessage(error.message);
+        setErrorBarOpen(true);
       });
   };
 
@@ -96,6 +117,16 @@ const Input = (props) => {
           endAdornment={<PhotoInput onPictureUpload={handlePictureUpload} />}
         />
       </FormControl>
+      {successBarOpen && (
+        <SnackbarSuccess setSnackBarOpen={setSuccessBarOpen} snackBarOpen={successBarOpen} />
+      )}
+      {errorBarOpen && (
+        <SnackbarError
+          setSnackBarOpen={setErrorBarOpen}
+          errorMessage={errorMessage}
+          snackBarOpen={errorBarOpen}
+        />
+      )}
     </form>
   );
 };
