@@ -6,8 +6,9 @@ const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
+    alignItems: (props) => (props.otherUser ? "flex-start" : "flex-end"),
     marginTop: 20,
+    marginRight: "2.5rem",
     marginBottom: 5,
   },
   avatar: {
@@ -16,66 +17,61 @@ const useStyles = makeStyles(() => ({
     marginRight: 11,
     marginTop: 6,
   },
-  usernameDate: {
+  date: {
     fontSize: 11,
     color: "#BECCE2",
     fontWeight: "bold",
     marginBottom: 5,
   },
   bubble: {
-    backgroundImage: "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)",
-    borderRadius: "0 10px 10px 10px",
+    background: (props) =>
+      props.otherUser ? "linear-gradient(225deg, #6CC1FF 0%, #3A8DFF 100%)" : "#F4F6FA",
+    borderRadius: (props) => (props.otherUser ? "0 10px 10px 10px" : "10px 10px 0 10px"),
     marginBottom: 5,
   },
   text: {
     fontSize: 14,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    color: (props) => (props.otherUser ? "#FFFFFF" : "#91A3C0"),
     letterSpacing: -0.2,
     padding: 8,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   visual: {
     display: "flex",
     marginBottom: 5,
   },
-  single: {
+  image: {
     objectFit: "cover",
-    width: "9.375rem",
-    marginRight: "5px",
+    width: (props) => (props.length < 2 ? "9.375rem" : "calc(150px * 0.75)"),
+    marginLeft: (props) => (props.otherUser ? 0 : "5px"),
+    marginRight: (props) => (props.otherUser ? "5px" : 0),
     height: "auto",
     background: "#F4F6FA",
-    borderRadius: "10px 0px 10px 10px",
+    borderRadius: (props) => (props.otherUser ? "10px 0px 10px 10px" : "10px 10px 10px 0px"),
     transform: "matrix(-1, 0, 0, 1, 0, 0)",
-  },
-  multiple: {
-    objectFit: "cover",
-    width: "calc(150px * 0.75)",
-    marginRight: "5px",
-    height: "auto",
-    background: "#F4F6FA",
-    borderRadius: "10px 0px 10px 10px",
-    transform: "matrix(-1, 0, 0, 1, 0, 0)",
-  },
-  senderAvatar: {
-    width: 20,
-    height: 20,
-    marginTop: 5,
   },
 }));
 
-const OtherUserBubble = (props) => {
-  const classes = useStyles();
-  const { text, time, otherUser, attachments } = props;
+const UserBubble = (props) => {
+  const classes = useStyles(props);
+  const { text, time, attachments, otherUser, length } = props;
+
   let content;
 
   if (attachments === null) {
     content = (
       <Box className={classes.root}>
-        <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar} />
+        {otherUser && (
+          <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar} />
+        )}
         <Box>
-          <Typography className={classes.usernameDate}>
-            {otherUser.username} {time}
-          </Typography>
+          {
+            <Typography className={classes.date}>
+              {otherUser && otherUser.username} {time}
+            </Typography>
+          }
+
           <Box className={classes.bubble}>
             <Typography className={classes.text}>{text}</Typography>
           </Box>
@@ -85,7 +81,7 @@ const OtherUserBubble = (props) => {
   } else {
     content = (
       <Box className={classes.root}>
-        {attachments.length < 2 && <Typography className={classes.usernameDate}>{time}</Typography>}
+        {attachments.length < 2 && <Typography className={classes.date}>{time}</Typography>}
         {text && attachments.length > 1 && (
           <Box className={classes.bubble}>
             <Typography className={classes.text}>{text}</Typography>
@@ -98,7 +94,8 @@ const OtherUserBubble = (props) => {
               variant="square"
               alt={url}
               src={url}
-              className={attachments.length > 1 ? classes.multiple : classes.single}
+              className={classes.image}
+              length={length}
             />
           ))}
         </Box>
@@ -107,11 +104,12 @@ const OtherUserBubble = (props) => {
             <Typography className={classes.text}>{text}</Typography>
           </Box>
         )}
-        {attachments.length > 1 && <Typography className={classes.usernameDate}>{time}</Typography>}
+        {attachments.length > 1 && <Typography className={classes.date}>{time}</Typography>}
       </Box>
     );
   }
+
   return content;
 };
 
-export default OtherUserBubble;
+export default UserBubble;

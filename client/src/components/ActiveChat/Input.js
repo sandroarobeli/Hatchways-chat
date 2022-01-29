@@ -35,7 +35,7 @@ const Input = (props) => {
     setText(event.target.value);
   };
 
-  const handlePictureUpload = (event) => {
+  const handlePictureUpload = async (event) => {
     const files = Array.from(event.target.files);
     const formData = new FormData();
     const promises = [];
@@ -48,11 +48,11 @@ const Input = (props) => {
         file.type === "image/gif"
     );
 
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       if (typeIsAllowed) {
         setIsLoading(true);
         formData.append("file", file);
-        formData.append("upload_preset", "docs_upload_example_us_preset");
+        formData.append("upload_preset", process.env.REACT_APP_UPLOAD_PRESET);
       }
       const axiosInstance = axios.create({
         transformRequest: (data, headers) => {
@@ -61,30 +61,24 @@ const Input = (props) => {
         },
         data: formData,
       });
-      promises[index] = axiosInstance.post(
-        "https://api.cloudinary.com/v1_1/demo/image/upload",
-        formData,
-        axiosInstance
-      );
+      promises.push(axiosInstance.post(process.env.REACT_APP_CLOUD_NAME, formData, axiosInstance));
     });
 
-    const allImages = Promise.all(promises);
-    allImages
-      .then((images) => {
-        const imageUrls = images.map((image) => image.data.secure_url);
-        if (imageUrls.length === 0) {
-          setErrorMessage("Attachment failed. Please try again.");
-          setErrorBarOpen(true);
-        }
-
-        setAttachments(imageUrls);
-        setIsLoading(false);
-        setSuccessBarOpen(true);
-      })
-      .catch((error) => {
-        setErrorMessage(error.message);
+    try {
+      const allImages = await Promise.all(promises);
+      const imageUrls = allImages.map((image) => image.data.secure_url);
+      if (imageUrls.length === 0) {
+        setErrorMessage("Attachment failed. Please try again.");
         setErrorBarOpen(true);
-      });
+      }
+
+      setAttachments(imageUrls);
+      setIsLoading(false);
+      setSuccessBarOpen(true);
+    } catch (error) {
+      setErrorMessage(error.message);
+      setErrorBarOpen(true);
+    }
   };
 
   const handleSubmit = async (event) => {

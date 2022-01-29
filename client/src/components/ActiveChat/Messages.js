@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@material-ui/core";
-import { SenderBubble, OtherUserBubble } from "../ActiveChat";
+import UserBubble from "./UserBubble";
 import moment from "moment";
 
 const Messages = (props) => {
@@ -12,18 +12,20 @@ const Messages = (props) => {
         const time = moment(message.createdAt).format("h:mm");
 
         return message.senderId === userId ? (
-          <SenderBubble
+          <UserBubble
             key={message.id}
             text={message.text}
             time={time}
             attachments={message.attachments}
+            length={message.attachments ? message.attachments.length : 1}
           />
         ) : (
-          <OtherUserBubble
+          <UserBubble
             key={message.id}
             text={message.text}
-            attachments={message.attachments}
             time={time}
+            attachments={message.attachments}
+            length={message.attachments ? message.attachments.length : 1}
             otherUser={otherUser}
           />
         );

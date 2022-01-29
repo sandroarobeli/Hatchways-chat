@@ -22,7 +22,7 @@ const SnackbarSuccess = (props) => {
       message={"Your image has been attached successfully!"}
       autoHideDuration={2000}
       action={
-        <React.Fragment>
+        <>
           <Button
             className={classes.icon}
             size="small"
@@ -30,7 +30,7 @@ const SnackbarSuccess = (props) => {
           >
             <Close color="secondary" />
           </Button>
-        </React.Fragment>
+        </>
       }
       ContentProps={{
         classes: {
